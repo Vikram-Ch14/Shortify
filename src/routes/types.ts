@@ -10,7 +10,9 @@ export type RouteProps = {
   name: RouteName;
   path: string;
   element?: React.ReactNode;
-  navPath: (args: RouteArgs) => void;
+  getRoutePath: (args: RouteArgs) => void;
 };
 
-export type RouteArgs = {};
+export type RouteArgs = {
+    url?:string
+};

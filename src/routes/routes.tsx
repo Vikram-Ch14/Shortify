@@ -8,18 +8,22 @@ export const Routes: Array<RouteProps> = [
     name: RouteName.LandingPage,
     path: "/",
     element: <LandingPage />,
-    navPath: (args: RouteArgs) => {},
+    getRoutePath: (args: RouteArgs) => {},
   },
   {
     name: RouteName.DashBoardPage,
     path: "/dashboard",
     element: <DashBoardPage />,
-    navPath: (args: RouteArgs) => {},
+    getRoutePath: (args: RouteArgs) => {},
   },
   {
     name: RouteName.Login,
     path: "/login",
     element: <Login />,
-    navPath: (args: RouteArgs) => {},
+    getRoutePath: (args: RouteArgs) => {
+        if(args?.url){
+            return `/login?url=${args?.url}`
+        }
+    },
   },
 ];

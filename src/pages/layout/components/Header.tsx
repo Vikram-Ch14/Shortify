@@ -17,7 +17,6 @@ const Header = () => {
   return (
     <div className="flex items-center justify-between">
       <div>
-        <Button>icon</Button>
       </div>
       <div>
         {isUserLogin ? (
