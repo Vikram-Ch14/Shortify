@@ -25,7 +25,7 @@ const LandingPage = () => {
   };
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center flex-1">
       <h2 className="my-10 text-2xl sm:text-3xl lg:text-5xl text-white text-center sm:my-16 font-extrabold">
         URL Shortner
       </h2>

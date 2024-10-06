@@ -3,7 +3,8 @@ import * as React from "react";
 export enum RouteName {
   LandingPage,
   DashBoardPage,
-  Login
+  Login,
+  SignUp
 }
 
 export type RouteProps = {

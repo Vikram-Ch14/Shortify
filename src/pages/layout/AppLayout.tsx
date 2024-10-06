@@ -3,8 +3,8 @@ import Header from "./components/Header";
 
 const AppLayout = () => {
   return (
-    <div className="h-screen w-full ">
-      <main className="p-10 w-full">
+    <div className="h-screen w-full flex flex-col">
+      <main className="p-10 w-full flex flex-col h-5/6">
         <Header />
         <Outlet />
       </main>

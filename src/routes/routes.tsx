@@ -2,6 +2,7 @@ import LandingPage from "@/pages/preview/LandingPage";
 import { RouteArgs, RouteName, RouteProps } from "./types";
 import DashBoardPage from "@/pages/dashboard/DashBoardPage";
 import Login from "@/pages/auth/Login";
+import SignUp from "@/pages/auth/SignUp";
 
 export const Routes: Array<RouteProps> = [
   {
@@ -21,9 +22,19 @@ export const Routes: Array<RouteProps> = [
     path: "/login",
     element: <Login />,
     getRoutePath: (args: RouteArgs) => {
-        if(args?.url){
-            return `/login?url=${args?.url}`
-        }
+      if (args?.url) {
+        return `/login?url=${args?.url}`;
+      }
+    },
+  },
+  {
+    name: RouteName.SignUp,
+    path: "/signup",
+    element: <SignUp />,
+    getRoutePath: (args: RouteArgs) => {
+      if (args?.url) {
+        return `/signup?url=${args?.url}`;
+      }
     },
   },
 ];
