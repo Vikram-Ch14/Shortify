@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { UserDetails } from "./types";
 import { loginUser } from "@/service/AuthService";
 
+
 const Login = () => {
   const [userDetails, setUserDetails] = useState<UserDetails>({
     email: "",
