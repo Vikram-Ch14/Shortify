@@ -11,6 +11,9 @@ import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { CreateUser } from "./types";
 import { createUserAcc } from "@/service/AuthService";
+import { getRoute } from "@/utils/utils";
+import { RouteName } from "@/routes/types";
+import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
   const [createUser, setCreateUser] = useState<CreateUser>({
@@ -18,6 +21,10 @@ const SignUp = () => {
     email: "",
     password: "",
   });
+
+  const getLoginRoute = getRoute(RouteName?.Login);
+
+  const navigate = useNavigate();
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e?.target;
@@ -40,6 +47,11 @@ const SignUp = () => {
         console.error(e);
       }
     }
+  };
+
+  const navigateToLogin = () => {
+    const getNavPath = getLoginRoute?.path;
+    navigate(getNavPath!);
   };
 
   return (
@@ -99,7 +111,9 @@ const SignUp = () => {
             </div>
             <div className="mt-4 text-center text-sm">
               Already have an account?{" "}
-              <span className="cursor-pointer">Sign In</span>
+              <span className="cursor-pointer" onClick={navigateToLogin}>
+                Sign In
+              </span>
             </div>
           </CardContent>
         </Card>

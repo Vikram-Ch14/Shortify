@@ -8,16 +8,20 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { UserDetails } from "./types";
 import { loginUser } from "@/service/AuthService";
-
+import { getRoute } from "@/utils/utils";
+import { RouteName } from "@/routes/types";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [userDetails, setUserDetails] = useState<UserDetails>({
     email: "",
     password: "",
   });
+  const signUpRoute = getRoute(RouteName?.SignUp);
+  const navigate = useNavigate();
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { type, value } = e?.target;
@@ -37,6 +41,11 @@ const Login = () => {
         console.error(e);
       }
     }
+  };
+
+  const navigateToSignUp = () => {
+    const getNavPath = signUpRoute?.path;
+    navigate(getNavPath!);
   };
 
   return (
@@ -80,7 +89,9 @@ const Login = () => {
             </div>
             <div className="mt-4 text-center text-sm ">
               Don&apos;t have an account?{" "}
-              <span className="cursor-pointer">Sign up</span>
+              <span className="cursor-pointer" onClick={navigateToSignUp}>
+                Sign up
+              </span>
             </div>
           </CardContent>
         </Card>
