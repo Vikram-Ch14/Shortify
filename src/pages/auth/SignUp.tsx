@@ -8,12 +8,13 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CreateUser } from "./types";
 import { createUserAcc } from "@/service/AuthService";
 import { getRoute } from "@/utils/utils";
 import { RouteName } from "@/routes/types";
 import { useNavigate } from "react-router-dom";
+import { Loader2 } from "lucide-react";
 
 const SignUp = () => {
   const [createUser, setCreateUser] = useState<CreateUser>({
@@ -21,6 +22,8 @@ const SignUp = () => {
     email: "",
     password: "",
   });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isUserCreated, setIsUserCreated] = useState<boolean>(false);
 
   const getLoginRoute = getRoute(RouteName?.Login);
 
@@ -36,6 +39,7 @@ const SignUp = () => {
     });
   };
   const handleCreate = async () => {
+    setIsLoading(true);
     if (
       createUser?.email?.length &&
       createUser?.username?.length &&
@@ -43,8 +47,11 @@ const SignUp = () => {
     ) {
       try {
         await createUserAcc(createUser?.email, createUser?.password);
+        setIsUserCreated(true);
       } catch (e) {
         console.error(e);
+      } finally {
+        setIsLoading(false);
       }
     }
   };
@@ -53,6 +60,8 @@ const SignUp = () => {
     const getNavPath = getLoginRoute?.path;
     navigate(getNavPath!);
   };
+
+  useEffect(() => {}, [isUserCreated]);
 
   return (
     <div className="flex flex-col flex-1">
@@ -105,7 +114,7 @@ const SignUp = () => {
                 />
               </div>
               <Button type="submit" className="w-full" onClick={handleCreate}>
-                {/* {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} */}
+                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Create an account
               </Button>
             </div>
