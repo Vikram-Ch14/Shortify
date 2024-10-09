@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useEffect, useState } from "react";
 import { CreateUser } from "./types";
-import { createUserAcc } from "@/service/AuthService";
+import { createUserAcc, userData } from "@/service/AuthService";
 import { getRoute } from "@/utils/utils";
 import { RouteName } from "@/routes/types";
 import { useNavigate } from "react-router-dom";
@@ -23,7 +23,7 @@ const SignUp = () => {
     password: "",
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isUserCreated, setIsUserCreated] = useState<boolean>(false);
+  const [userId, setUserId] = useState<string>("");
 
   const getLoginRoute = getRoute(RouteName?.Login);
 
@@ -46,11 +46,13 @@ const SignUp = () => {
       createUser?.password?.length
     ) {
       try {
-        await createUserAcc(createUser?.email, createUser?.password);
-        setIsUserCreated(true);
+        const user = await createUserAcc(
+          createUser?.email,
+          createUser?.password
+        );
+        setUserId(user?.user?.uid);
       } catch (e) {
         console.error(e);
-      } finally {
         setIsLoading(false);
       }
     }
@@ -61,7 +63,22 @@ const SignUp = () => {
     navigate(getNavPath!);
   };
 
-  useEffect(() => {}, [isUserCreated]);
+  useEffect(() => {
+    if (!userId?.length) return;
+
+    const persistData = async () => {
+      const { username, email } = createUser;
+
+      try {
+        await userData(userId, username, email);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    persistData();
+  }, [userId]);
 
   return (
     <div className="flex flex-col flex-1">
