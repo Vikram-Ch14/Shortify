@@ -1,12 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { RouteName } from "@/routes/types";
+import { useAuthStore } from "@/store/authStore";
 import { getRoute } from "@/utils/utils";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const LandingPage = () => {
   const [url, setUrl] = useState<string>("");
+  const currentUser = useAuthStore((state)=>state?.currentUser);
 
   const loginRoute = getRoute(RouteName.Login);
   const navigate = useNavigate();
@@ -16,7 +18,7 @@ const LandingPage = () => {
   };
 
   const handleShortenUrl = () => {
-    if (url) {
+    if (url && !currentUser?.id?.length) {
       const getNavPath = loginRoute?.getRoutePath!({
         url: url,
       });

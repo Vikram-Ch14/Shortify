@@ -3,7 +3,7 @@ import { UserData } from "./types";
 
 export type AuthStore = {
   currentUser: UserData | null;
-  setCurrentUser: (currentUser: UserData) => void;
+  setCurrentUser: (currentUser: UserData | null) => void;
 };
 
 export const useAuthStore = create<AuthStore>((set) => ({

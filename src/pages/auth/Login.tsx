@@ -14,12 +14,15 @@ import { loginUser } from "@/service/AuthService";
 import { getRoute } from "@/utils/utils";
 import { RouteName } from "@/routes/types";
 import { useNavigate } from "react-router-dom";
+import { Loader2 } from "lucide-react";
 
 const Login = () => {
   const [userDetails, setUserDetails] = useState<UserDetails>({
     email: "",
     password: "",
   });
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const signUpRoute = getRoute(RouteName?.SignUp);
   const navigate = useNavigate();
 
@@ -34,11 +37,14 @@ const Login = () => {
   };
 
   const handleLogin = async () => {
+    setIsLoading(true);
     if (userDetails?.email?.length && userDetails?.password?.length) {
       try {
         await loginUser(userDetails?.email, userDetails?.password);
       } catch (e) {
         console.error(e);
+      } finally {
+        setIsLoading(false);
       }
     }
   };
@@ -84,6 +90,7 @@ const Login = () => {
                 />
               </div>
               <Button type="submit" className="w-full" onClick={handleLogin}>
+                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Login
               </Button>
             </div>

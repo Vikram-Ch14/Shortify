@@ -8,23 +8,31 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import { auth } from "@/lib/firebaseConfig";
 import { RouteName } from "@/routes/types";
+import { useAuthStore } from "@/store/authStore";
 import { getRoute } from "@/utils/utils";
 import { AvatarImage } from "@radix-ui/react-avatar";
 import { Link, LogOut } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const Header = () => {
-  const isUserLogin = false;
-
-  const loginRoute = getRoute(RouteName?.Login);
-  const signUpRoute = getRoute(RouteName?.SignUp);
   const navigate = useNavigate();
   const location = useLocation();
+  const loginRoute = getRoute(RouteName?.Login);
+  const signUpRoute = getRoute(RouteName?.SignUp);
+
+  const currentUser = useAuthStore((state) => state.currentUser);
+  const setCurrentUser = useAuthStore((state) => state.setCurrentUser);
 
   const navigateToLogin = () => {
     const getNavPath = loginRoute?.path;
     navigate(getNavPath!);
+  };
+
+  const handleLogout = () => {
+    setCurrentUser(null);
+    auth?.signOut();
   };
 
   return (
@@ -33,7 +41,7 @@ const Header = () => {
       <div>
         {location?.pathname !== loginRoute?.path &&
         location?.pathname !== signUpRoute?.path ? (
-          !isUserLogin ? (
+          !currentUser?.id ? (
             <Button onClick={navigateToLogin}>Login</Button>
           ) : (
             <DropdownMenu>
@@ -44,13 +52,16 @@ const Header = () => {
                 </Avatar>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuLabel>New Saturday</DropdownMenuLabel>
+                <DropdownMenuLabel>{currentUser?.username}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
                   <Link className="mr-2" height={15} width={15} />
                   <span>Links</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem className="text-red-400">
+                <DropdownMenuItem
+                  className="text-red-400"
+                  onClick={handleLogout}
+                >
                   <LogOut className="mr-2" height={15} width={15} />
                   <span>LogOut</span>
                 </DropdownMenuItem>
