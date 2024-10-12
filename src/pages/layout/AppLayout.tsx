@@ -1,26 +1,27 @@
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import Header from "./components/Header";
 import { useAuthStore } from "@/store/authStore";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/lib/firebaseConfig";
 import { fetchUserInfo } from "@/service/AuthService";
-import { useEffect } from "react";
-import { getRoute } from "@/utils/utils";
-import { RouteName } from "@/routes/types";
+import { useEffect, useState } from "react";
 
 const AppLayout = () => {
-  const navigate = useNavigate();
-  const appRoute = getRoute(RouteName?.LandingPage);
-
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const setCurrentUser = useAuthStore((state) => state.setCurrentUser);
 
   useEffect(() => {
+    setIsLoading(true);
     const onSub = onAuthStateChanged(auth, async (user) => {
-      console.log("triggering",user?.uid);
-      const isUser = await fetchUserInfo(user?.uid!);
-      if (isUser) {
-        setCurrentUser(isUser);
-        navigate(appRoute?.path!);
+      try {
+        const isUser = await fetchUserInfo(user?.uid!);
+        if (isUser) {
+          setCurrentUser(isUser);
+        }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setIsLoading(false);
       }
     });
     return () => {
@@ -28,8 +29,10 @@ const AppLayout = () => {
     };
   }, [fetchUserInfo]);
 
+  if (isLoading) return;
+
   return (
-    <div className="h-screen w-full flex flex-col">
+    <div className="h-screen w-full flex flex-cols">
       <main className="p-10 w-full flex flex-col h-5/6">
         <Header />
         <Outlet />

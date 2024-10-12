@@ -21,6 +21,7 @@ const Header = () => {
   const location = useLocation();
   const loginRoute = getRoute(RouteName?.Login);
   const signUpRoute = getRoute(RouteName?.SignUp);
+  const appRoute = getRoute(RouteName?.LandingPage)
 
   const currentUser = useAuthStore((state) => state.currentUser);
   const setCurrentUser = useAuthStore((state) => state.setCurrentUser);
@@ -33,6 +34,7 @@ const Header = () => {
   const handleLogout = () => {
     setCurrentUser(null);
     auth?.signOut();
+    navigate(appRoute?.path!)
   };
 
   return (
@@ -48,7 +50,7 @@ const Header = () => {
               <DropdownMenuTrigger>
                 <Avatar>
                   <AvatarImage src="https://github.com/shadcn.png" />
-                  <AvatarFallback>OK</AvatarFallback>
+                  <AvatarFallback>CV</AvatarFallback>
                 </Avatar>
               </DropdownMenuTrigger>
               <DropdownMenuContent>

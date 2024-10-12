@@ -13,7 +13,7 @@ import { CreateUser } from "./types";
 import { createUserAcc, userData } from "@/service/AuthService";
 import { getRoute } from "@/utils/utils";
 import { RouteName } from "@/routes/types";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 
 const SignUp = () => {

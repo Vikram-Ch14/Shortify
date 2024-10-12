@@ -15,7 +15,11 @@ export const Routes: Array<RouteProps> = [
     name: RouteName.DashBoardPage,
     path: "/dashboard",
     element: <DashBoardPage />,
-    getRoutePath: (args: RouteArgs) => {},
+    getRoutePath: (args: RouteArgs) => {
+      if (args?.url) {
+        return `/dashboard?url=${args?.url}`;
+      }
+    },
   },
   {
     name: RouteName.Login,

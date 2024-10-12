@@ -8,9 +8,10 @@ import { useNavigate } from "react-router-dom";
 
 const LandingPage = () => {
   const [url, setUrl] = useState<string>("");
-  const currentUser = useAuthStore((state)=>state?.currentUser);
+  const currentUser = useAuthStore((state) => state?.currentUser);
 
   const loginRoute = getRoute(RouteName.Login);
+  const dashboardRoute = getRoute(RouteName?.DashBoardPage);
   const navigate = useNavigate();
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -18,10 +19,14 @@ const LandingPage = () => {
   };
 
   const handleShortenUrl = () => {
-    if (url && !currentUser?.id?.length) {
-      const getNavPath = loginRoute?.getRoutePath!({
-        url: url,
-      });
+    if (url) {
+      const getNavPath = !currentUser?.id?.length
+        ? loginRoute?.getRoutePath!({
+            url: url,
+          })
+        : dashboardRoute?.getRoutePath({
+            url: url,
+          });
       navigate(getNavPath!);
     }
   };
@@ -38,8 +43,11 @@ const LandingPage = () => {
           value={url}
           onChange={onChange}
         />
-        {/* className="bg-green-500 text-black hover:bg-red-800 hover:text-white" */}
-        <Button variant={"destructive"} onClick={handleShortenUrl}>
+        {/* variant={"destructive"} */}
+        <Button
+          className="bg-green-500 text-black hover:bg-red-800 hover:text-white"
+          onClick={handleShortenUrl}
+        >
           Shorten Url!
         </Button>
       </div>

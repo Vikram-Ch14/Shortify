@@ -24,6 +24,7 @@ const Login = () => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const signUpRoute = getRoute(RouteName?.SignUp);
+  const dashboardRoute = getRoute(RouteName?.DashBoardPage);
   const navigate = useNavigate();
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,6 +42,7 @@ const Login = () => {
     if (userDetails?.email?.length && userDetails?.password?.length) {
       try {
         await loginUser(userDetails?.email, userDetails?.password);
+        navigate(dashboardRoute?.path!);
       } catch (e) {
         console.error(e);
       } finally {
