@@ -33,13 +33,13 @@ const AppLayout = () => {
 
   return (
     <div className="h-screen w-full flex flex-cols">
-      <main className="p-10 w-full flex flex-col h-5/6">
+      <main className="p-10 w-full flex flex-col">
         <Header />
         <Outlet />
       </main>
-      <div className="fixed bottom-0 w-full p-10 text-center bg-zinc-800 ">
+      {/* <div className="fixed bottom-0 w-full p-10 text-center bg-zinc-800 ">
         Shortify
-      </div>
+      </div> */}
     </div>
   );
 };

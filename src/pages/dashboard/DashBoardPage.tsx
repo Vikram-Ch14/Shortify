@@ -8,6 +8,7 @@ import { Filter, Loader2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import UrlCard from "./components/UrlCard";
+import CreateLinkCard from "./components/CreateLinkCard";
 
 const DashBoardPage = () => {
   const [searchValue, setSearchValue] = useState("");
@@ -75,7 +76,7 @@ const DashBoardPage = () => {
       </div>
       <div className="flex justify-between items-center">
         <h1 className="text-4xl font-extrabold">My Links</h1>
-        <Button>Create Link</Button>
+        <CreateLinkCard/>
       </div>
       <div className="relative">
         <Input
@@ -88,8 +89,8 @@ const DashBoardPage = () => {
         <Filter className="absolute top-3 right-2 pr-2" />
       </div>
       <div>
-        {filterUrls?.map((url: UrlCollection, index: number) => {
-          return <UrlCard key={index} url={url} />;
+        {filterUrls?.map((url: UrlCollection) => {
+          return <UrlCard url={url} key={url?.id} />;
         })}
       </div>
     </div>

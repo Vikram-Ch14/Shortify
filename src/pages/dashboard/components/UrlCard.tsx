@@ -1,6 +1,7 @@
+import { Button } from "@/components/ui/button";
 import { UrlCollection } from "@/store/types";
+import { Copy, Delete, Download, Trash } from "lucide-react";
 import { Link } from "react-router-dom";
-import { formatDate } from "../utils";
 
 type UrlCardProps = {
   url: UrlCollection;
@@ -9,12 +10,29 @@ type UrlCardProps = {
 const UrlCard = ({ url }: UrlCardProps) => {
   return (
     <div className="flex flex-col md:flex-row gap-5 border p-4 bg-gray-900 rounded-lg">
-      <Link to={`/link/${url?.id}`}>
-        <span>{url?.title}</span>
-        <span>{url?.short_url}</span>
-        <span>{url?.original_url}</span>
-        <span>{url?.created_at}</span>
+      <Link to={`/link/${url?.id}`} className="flex flex-col flex-1 gap-2">
+        <span className="text-3xl font-extrabold hover:underline cursor-pointer">
+          {url?.title}
+        </span>
+        <span className="text-2xl text-blue-400 font-bold hover:underline cursor-pointer">
+          {url?.short_url}
+        </span>
+        <span className="flex items-center gap-1 hover:underline cursor-pointer">
+          {url?.original_url}
+        </span>
       </Link>
+      
+      <div className="flex gap-2">
+        <Button variant="ghost">
+          <Copy />
+        </Button>
+        <Button variant="ghost">
+          <Download />
+        </Button>
+        <Button variant="ghost">
+          <Trash />
+        </Button>
+      </div>
     </div>
   );
 };
