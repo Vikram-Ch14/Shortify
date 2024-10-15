@@ -6,7 +6,6 @@ import { useAuthStore } from "@/store/authStore";
 import { UrlCollection } from "@/store/types";
 import { Filter, Loader2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
 import UrlCard from "./components/UrlCard";
 import CreateLinkCard from "./components/CreateLinkCard";
 
@@ -14,6 +13,7 @@ const DashBoardPage = () => {
   const [searchValue, setSearchValue] = useState("");
   const [urls, setUrls] = useState<UrlCollection[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isRefresh, setIsRefresh] = useState<boolean>(false);
   const currentUser = useAuthStore((state) => state.currentUser);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,7 +36,7 @@ const DashBoardPage = () => {
 
   useEffect(() => {
     fetchUrls();
-  }, [currentUser]);
+  }, [currentUser,isRefresh]);
 
   const filterUrls = useMemo(() => {
     const filteredUrls = urls?.filter((url: UrlCollection) =>
@@ -76,7 +76,7 @@ const DashBoardPage = () => {
       </div>
       <div className="flex justify-between items-center">
         <h1 className="text-4xl font-extrabold">My Links</h1>
-        <CreateLinkCard/>
+        <CreateLinkCard  setIsRefresh={setIsRefresh}/>
       </div>
       <div className="relative">
         <Input
@@ -88,7 +88,7 @@ const DashBoardPage = () => {
         />
         <Filter className="absolute top-3 right-2 pr-2" />
       </div>
-      <div>
+      <div className="flex flex-col gap-4 pb-16">
         {filterUrls?.map((url: UrlCollection) => {
           return <UrlCard url={url} key={url?.id} />;
         })}

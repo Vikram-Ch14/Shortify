@@ -30,7 +30,7 @@ export const postUrls = async (
   title: string
 ) => {
   const docRef = doc(db, "urls", userId);
-  await updateDoc(docRef, {
+   await updateDoc(docRef, {
     data: arrayUnion({
       id: uniqueId,
       created_at: new Date(),

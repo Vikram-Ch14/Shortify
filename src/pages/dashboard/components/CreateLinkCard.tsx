@@ -9,7 +9,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { postUrls } from "@/service/HttpService";
+import { useAuthStore } from "@/store/authStore";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
+import { QRCodeCanvas } from "qrcode.react";
+import { Loader2 } from "lucide-react";
 
 type UrlData = {
   custom_url: string;
@@ -17,12 +22,22 @@ type UrlData = {
   title: string;
 };
 
-const CreateLinkCard = () => {
+type CreateLinkCardProps = {
+  setIsRefresh: Dispatch<SetStateAction<boolean>>;
+};
+
+const CreateLinkCard = ({ setIsRefresh }: CreateLinkCardProps) => {
   const [urlData, setUrlData] = useState<UrlData>({
     custom_url: "",
     original_url: "",
     title: "",
   });
+  const [shortUrl, setShortUrl] = useState<string>("");
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const qrRef = useRef<HTMLCanvasElement | null>(null);
+  const currentUser = useAuthStore((state) => state.currentUser);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e?.target;
@@ -34,14 +49,62 @@ const CreateLinkCard = () => {
     });
   };
 
-  const createUrl = async () => {
-    const { original_url, custom_url, title } = urlData;
+  const generateShortUrl = async () => {
     const short_url = Math.random().toString(36).substring(2, 6);
-    
+    setShortUrl(short_url);
   };
 
+  const resetState = () => {
+    setUrlData((prevData: UrlData) => {
+      return {
+        ...prevData,
+        custom_url: "",
+        title: "",
+        original_url: "",
+      };
+    });
+  };
+
+  const createUrlCollection = async (qrCode: string) => {
+    setIsLoading(true);
+    const { original_url, custom_url, title } = urlData;
+    if (
+      title?.length &&
+      original_url?.length &&
+      qrCode?.length &&
+      currentUser?.id
+    ) {
+      const uniqueId = uuidv4();
+      try {
+        await postUrls(
+          currentUser?.id,
+          uniqueId,
+          custom_url,
+          original_url,
+          qrCode,
+          shortUrl,
+          title
+        );
+        setIsOpen(false);
+        resetState();
+        setIsRefresh((prev) => !prev);
+      } catch (e) {
+        console.error("error", e);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (shortUrl?.length && qrRef?.current) {
+      const qrCodeUrl = qrRef.current.toDataURL("image/png");
+      createUrlCollection(qrCodeUrl);
+    }
+  }, [shortUrl]);
+
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={() => setIsOpen(!isOpen)}>
       <DialogTrigger>
         <Button className="bg-green-500 text-black hover:bg-red-800 hover:text-white">
           Create Link
@@ -50,6 +113,17 @@ const CreateLinkCard = () => {
       <DialogContent className="sm:max-w-md flex flex-col gap-10">
         <DialogHeader className="flex flex-col gap-10">
           <DialogTitle className="font-bold text-2xl">Create New</DialogTitle>
+
+          {urlData?.original_url && (
+            // Render the QR code as a canvas using QRCodeCanvas
+            <QRCodeCanvas
+              value={shortUrl}
+              size={120}
+              marginSize={1}
+              ref={qrRef}
+            />
+          )}
+
           <Input
             id="link-title"
             placeholder="Short Link Title"
@@ -81,8 +155,9 @@ const CreateLinkCard = () => {
         <DialogFooter className="sm:justify-start">
           <Button
             className="bg-green-500 text-black hover:bg-red-800 hover:text-white"
-            onClick={createUrl}
+            onClick={generateShortUrl}
           >
+            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Create
           </Button>
         </DialogFooter>
