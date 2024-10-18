@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { getUrls } from "@/service/HttpService";
@@ -36,14 +35,14 @@ const DashBoardPage = () => {
 
   useEffect(() => {
     fetchUrls();
-  }, [currentUser,isRefresh]);
+  }, [currentUser, isRefresh]);
 
   const filterUrls = useMemo(() => {
     const filteredUrls = urls?.filter((url: UrlCollection) =>
       url?.title?.toLowerCase().includes(searchValue?.toLowerCase())
     );
     return filteredUrls;
-  }, [urls]);
+  }, [urls, searchValue]);
 
   return (
     <div className="flex flex-col gap-8">
@@ -76,7 +75,7 @@ const DashBoardPage = () => {
       </div>
       <div className="flex justify-between items-center">
         <h1 className="text-4xl font-extrabold">My Links</h1>
-        <CreateLinkCard  setIsRefresh={setIsRefresh}/>
+        <CreateLinkCard setIsRefresh={setIsRefresh} />
       </div>
       <div className="relative">
         <Input
