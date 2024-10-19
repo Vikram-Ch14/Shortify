@@ -13,7 +13,7 @@ import { UserDetails } from "./types";
 import { loginUser } from "@/service/AuthService";
 import { getRoute } from "@/utils/utils";
 import { RouteName } from "@/routes/types";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 
 const Login = () => {
@@ -23,9 +23,12 @@ const Login = () => {
   });
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [searchParams] = useSearchParams();
+  const isUrl = searchParams.get("url") ?? "";
+  const navigate = useNavigate();
   const signUpRoute = getRoute(RouteName?.SignUp);
   const dashboardRoute = getRoute(RouteName?.DashBoardPage);
-  const navigate = useNavigate();
+  const appRoute = getRoute(RouteName?.LandingPage);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { type, value } = e?.target;
@@ -42,7 +45,7 @@ const Login = () => {
     if (userDetails?.email?.length && userDetails?.password?.length) {
       try {
         await loginUser(userDetails?.email, userDetails?.password);
-        navigate(dashboardRoute?.path!);
+        isUrl?.length ? navigateToDashBoard() : navigate(appRoute?.path!);
       } catch (e) {
         console.error(e);
       } finally {
@@ -50,6 +53,13 @@ const Login = () => {
       }
     }
   };
+
+  const navigateToDashBoard = () =>{
+    const getNavPath = dashboardRoute?.getRoutePath!({
+      url:isUrl
+    })
+    navigate(getNavPath!)
+  }
 
   const navigateToSignUp = () => {
     const getNavPath = signUpRoute?.path;
