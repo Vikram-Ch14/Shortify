@@ -1,5 +1,5 @@
 import { db } from "@/lib/firebaseConfig";
-import { UrlsCollection } from "@/store/types";
+import { UrlCollection, UrlsCollection } from "@/store/types";
 import { arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
 
 export const getUrls = async (userId: string) => {
@@ -48,7 +48,11 @@ export const getOriginalUrl = async (userId: string, url_id: string) => {
   const docRef = doc(db, "urls", userId);
   const docSnap = await getDoc(docRef);
   if (docSnap?.exists()) {
-    const urlData = docSnap?.data(); // add id 
-    return urlData
+    const urlResponse = docSnap?.data() as UrlsCollection;
+    return (
+      urlResponse?.data?.find(
+        (urlData: UrlCollection) => urlData?.id === url_id
+      ) ?? null
+    );
   }
 };

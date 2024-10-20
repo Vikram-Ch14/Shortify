@@ -15,6 +15,7 @@ import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { QRCodeCanvas } from "qrcode.react";
 import { Loader2 } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
 
 type UrlData = {
   custom_url: string;
@@ -38,6 +39,8 @@ const CreateLinkCard = ({ setIsRefresh }: CreateLinkCardProps) => {
 
   const qrRef = useRef<HTMLCanvasElement | null>(null);
   const currentUser = useAuthStore((state) => state.currentUser);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const isUrl = searchParams?.get("url") ?? "";
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e?.target;
@@ -103,8 +106,31 @@ const CreateLinkCard = ({ setIsRefresh }: CreateLinkCardProps) => {
     }
   }, [shortUrl]);
 
+  useEffect(() => {
+    if (isUrl?.length) {
+      setIsOpen(true);
+      setUrlData((prevData: UrlData) => {
+        return {
+          ...prevData,
+          original_url: isUrl,
+        };
+      });
+    }
+  }, [isUrl]);
+
+  const handleClose = (isClose: boolean) => {
+    setIsOpen(isClose);
+    setSearchParams({});
+    setUrlData((prevData: UrlData) => {
+      return {
+        ...prevData,
+        original_url: "",
+      };
+    });
+  };
+
   return (
-    <Dialog open={isOpen} onOpenChange={() => setIsOpen(!isOpen)}>
+    <Dialog open={isOpen} onOpenChange={(isClose) => handleClose(isClose)}>
       <DialogTrigger>
         <Button className="bg-green-500 text-black hover:bg-red-800 hover:text-white">
           Create Link

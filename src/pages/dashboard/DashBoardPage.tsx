@@ -24,6 +24,7 @@ const DashBoardPage = () => {
     if (currentUser?.id) {
       try {
         const response = await getUrls(currentUser?.id);
+        response?.data?.reverse();
         setUrls(response?.data!);
         setIsLoading(false);
       } catch (e) {
