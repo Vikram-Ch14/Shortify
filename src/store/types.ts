@@ -1,3 +1,5 @@
+import { Timestamp } from "firebase/firestore";
+
 export type UserData = {
   username: string;
   email: string;
@@ -5,7 +7,7 @@ export type UserData = {
 };
 
 export type UrlCollection = {
-  created_at: string;
+  created_at: Timestamp;
   custom_url: string;
   original_url: string;
   id: string;
